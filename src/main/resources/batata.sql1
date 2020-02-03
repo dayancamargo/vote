@@ -1,0 +1,27 @@
+create table AGENDA (
+    id bigint(10) IDENTITY NOT NULL primary key, -- AUTO_INCREMENT primary key,
+    name varchar_ignorecase(50) not null,
+    created_at timestamp DEFAULT CURRENT_TIMESTAMP not null
+);
+
+CREATE TABLE user (
+  id bigint(10) IDENTITY NOT NULL PRIMARY KEY,
+  cpf varchar(11) NOT NULL
+) ;
+
+create table ELECTION (
+    id bigint(10) IDENTITY NOT NULL primary key, -- AUTO_INCREMENT primary key,
+    id_agenda varchar_ignorecase(50) not null,
+    created_at timestamp DEFAULT CURRENT_TIMESTAMP not null,
+    expire_at timestamp not null,
+    CONSTRAINT fk_election_agenda FOREIGN KEY (id_agenda) REFERENCES AGENDA (id)
+);
+
+CREATE TABLE VOTE (
+  id bigint(20) IDENTITY NOT NULL, -- AUTO_INCREMENT,
+  vote varchar(3) NOT NULL,
+  id_election bigint(10) NOT NULL,
+  id_user bigint(10) NOT NULL,
+  CONSTRAINT fk_vote_election FOREIGN KEY (id_election) REFERENCES ELECTION (id),
+  CONSTRAINT fk_vote_user FOREIGN KEY (id_user) REFERENCES USER (id)
+);

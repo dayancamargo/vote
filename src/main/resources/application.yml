@@ -1,0 +1,58 @@
+### Basic Application Settings
+
+### Server Settings
+server:
+  port: 8888
+  compression:
+    enabled: true
+    mime-types: "text/xml,text/plain,application/json,application/xml" # Comma-separated list of MIME types that should be compressed.
+    min-response-size: "10KB"
+
+### Actuator Settings
+management:
+  endpoint:
+    health:
+      show-details: "always"
+      db:
+        enabled: "false"
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: "/apiinfo"
+      exposure:
+        include: "health, logfile"
+
+##Spring configs
+spring:
+  datasource:
+    driver-class-name: "org.h2.Driver"
+    username: "sa"
+    password:
+    url: "jdbc:h2:file:~/votedb"
+  jpa:
+    generate-ddl: "true"
+    hibernate:
+      ddl-auto: "update"
+  h2:
+    console:
+      enabled: "true"
+      path: "/h2"
+
+### Application Settings
+application:
+  client:
+    endpoint:
+      validator: "https://user-info.herokuapp.com/"
+
+### Logging Settings
+logging:
+  file: "log/meeting-vote.log"
+
+feign:
+  compression:
+    request:
+      enabled: true
+      mime-types: "text/xml,application/xml,application/json"
+      min-request-size: "2048"
+    response:
+      enabled: true

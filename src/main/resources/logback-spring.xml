@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="1 day">
+    <springProperty scope="context" name="LOG_SERVER"      source="log.level.server"      defaultValue="INFO"/>
+    <springProperty scope="context" name="LOG_APPLICATION" source="log.level.application" defaultValue="DEBUG"/>
+
+    <property name="LOG_PATH" value="log"/>
+    <property name="LOG_FILE" value="meeting-vote"/>
+    <property name="LOG_MAX_SIZE" value="10MB"/>
+
+    <appender class="ch.qos.logback.core.ConsoleAppender" name="consoleAppender">
+        <encoder>
+            <pattern>%cyan(Tid: %X{traceId} Sid: %X{spanId}) %green(%date %-5level) %yellow(%class{30}:%L) %gray(%message) %red(%ex{5}) %nopex %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/${LOG_FILE}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <FileNamePattern>${LOG_PATH}/compressed/${LOG_FILE}.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+            <!-- keep 7 days' worth of history -->
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>Tid:%X{traceId} Sid:%X{spanId} %date %-5level %class{30}:%L %message %rEx{3} %nopex %n</pattern>
+        </encoder>
+    </appender>
+
+    <logger additivity="false" level="${LOG_APPLICATION}" name="com.test.meeting">
+        <appender-ref ref="fileAppender"/>
+        <appender-ref ref="consoleAppender"/>
+    </logger>
+
+    <!--  Log das queries  -->
+    <logger additivity="false" level="${LOG_APPLICATION}" name="org.hibernate.SQL">
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="fileAppender"/>
+    </logger>
+    <!--  Log dos parametros da query, TRACE para mostrar os parametros -->
+    <logger additivity="false" level="INFO" name="org.hibernate.type">
+        <appender-ref ref="consoleAppender"/>
+    </logger>
+
+    <root level="${LOG_SERVER}">
+        <appender-ref ref="fileAppender"/>
+        <appender-ref ref="consoleAppender"/>
+    </root>
+
+</configuration>
